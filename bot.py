@@ -1025,6 +1025,9 @@ async def document_upload_quiz_handler(update: Update, context: ContextTypes.DEF
             await waiting_ui.reply_text(text="⚠️ <b>Extraction Void:</b> Could not pull sufficient clear text layout characters from this PDF. It might be scanned images or locked by encryption permissions.", reply_markup=main_menu_keyboard(lang), parse_mode="HTML")
             return
 
+        # تنظيف النص من رموز HTML
+        extracted_text_pool = extracted_text_pool.replace("<", "&lt;").replace(">", "&gt;")
+
         await waiting_ui.edit_text(text="⚡ <code>Text layers compiled successfully. Forcing Gemini structural JSON schema compliance...</code>", parse_mode="HTML")
 
         # تشييد وبناء قالب الفروق مجدداً للتحليل الهيكلي الآمن
