@@ -1088,7 +1088,6 @@ def execute_platform_runtime_init() -> None:
         Application.builder()
         .token(TELEGRAM_TOKEN)
         .post_init(application_post_init)
-        .updater(None)
         .build()
     )
     
