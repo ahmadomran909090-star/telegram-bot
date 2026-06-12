@@ -911,13 +911,15 @@ async def global_user_text_message_handler(update: Update, context: ContextTypes
     elif current_state == 'state_waiting_for_code_block':
         waiting_ui = await update.message.reply_text(text="⚡ <code>Initiating neural compiler audit... Checking algorithms and abstract syntax trees...</code>", parse_mode="HTML")
         context.user_data.clear()
+        lang_names = {"en": "English", "ar": "Arabic", "ru": "Russian"}
+        lang_name = lang_names.get(lang, "English")
         code_prompt = (
             f"Act as an expert world-class principal software engineering consultant and senior compiler diagnostics expert. Inspect this provided raw code script block carefully:\n\n{input_text}\n\n"
             f"Perform the following internal evaluation tracks:\n"
             f"1. Identity and list any structural bugs, syntax problems, memory vulnerabilities, or logical faults.\n"
             f"2. Supply an optimized, heavily cleaned, secure rewrite variation of the script.\n"
-            f"3. Explain the improvements made clearly (such as execution speed optimization or safety guardrails).\n"
-            f"Format the entire feedback breakdown using markdown and code syntax highlighting blocks beautifully. Deliver the whole report in this language medium: '{lang}'."
+            f"3. Explain the improvements made clearly.\n"
+            f"Format the entire feedback using markdown and code syntax highlighting. Deliver the whole report in {lang_name}."
         )
         try:
             generation = ai_client.models.generate_content(model='gemini-2.5-flash', contents=code_prompt)
@@ -930,12 +932,14 @@ async def global_user_text_message_handler(update: Update, context: ContextTypes
     elif current_state == 'state_waiting_for_book_title':
         waiting_ui = await update.message.reply_text(text="⚡ <code>Fetching deep literal bibliography index... Mapping macro book arguments...</code>", parse_mode="HTML")
         context.user_data.clear()
+        lang_names_map = {"en": "English", "ar": "Arabic", "ru": "Russian"}
+        lang_name = lang_names_map.get(lang, "English")
         book_prompt = (
             f"Act as an elite speed-reading academic professor and executive literary summarizer. The target literature to dismantle is: '{input_text}'. Provide a deep, structured, non-fiction architectural summary blueprint of this book. Your feedback summary MUST strictly follow this layout:\n"
             f"1. 📚 CORE THESIS: Describe the overarching primary driving philosophical message of the book in 3 lines.\n"
             f"2. 🔑 THE 3 REVOLUTIONARY PILLARS: Break down the top 3 most profound concepts or strategies explained within, utilizing clear, heavy bullet points.\n"
             f"3. 🛠️ ACTIONABLE LESSON MATRIX: Provide exactly 3 explicit daily habits or workflows the reader can immediately perform tomorrow morning to execute the book's teachings in reality.\n"
-            f"Avoid fluff, stay incredibly practical, and supply your response completely translated inside this language medium: '{lang}'."
+            f"Avoid fluff, stay incredibly practical, and supply your response completely in {lang_name}."
         )
         try:
             generation = ai_client.models.generate_content(model='gemini-2.5-flash', contents=book_prompt)
@@ -975,8 +979,10 @@ async def global_user_text_message_handler(update: Update, context: ContextTypes
         waiting_ui = await update.message.reply_text(text="⚡ <code>جاري توليد الأسئلة من النص...</code>", parse_mode="HTML")
         context.user_data.clear()
         
+        lang_full = {"en": "English", "ar": "Arabic", "ru": "Russian"}
+        lang_name = lang_full.get(lang, "English")
         quiz_system_prompt = (
-            f"Construct exactly {quiz_count} academic multiple-choice questions based purely on this instructional text material: '{input_text}'."
+            f"Construct exactly {quiz_count} academic multiple-choice questions based purely on this instructional text material: '{input_text}'. Respond entirely in {lang_name}."
         )
         try:
             # تشييد الهيكل البرمجي المتوقع باستخدام BaseModel لفرضه على مخرجات الذكاء الاصطناعي
@@ -1136,8 +1142,9 @@ async def document_upload_quiz_handler(update: Update, context: ContextTypes.DEF
             option_d: str
             correct_option_token: str
 
+        lang_map = {"en": "English", "ar": "Arabic", "ru": "Russian"}
         pdf_ai_prompt = (
-            f"Generate exactly {context.user_data.get('quiz_count', 5)} advanced multiple-choice questions based on this text:\n\n{extracted_text_pool[:6000]}"
+            f"Generate exactly {context.user_data.get('quiz_count', 5)} advanced multiple-choice questions based on this text. Respond entirely in {lang_map.get(lang, 'English')}:\n\n{extracted_text_pool[:6000]}"
         )
 
         ai_structured_response = ai_client.models.generate_content(
