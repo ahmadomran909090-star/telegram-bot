@@ -57,6 +57,7 @@ from telegram.ext import (
 # استيراد عميل Google GenAI المطور
 from google import genai
 from google.genai import types
+from pydantic import BaseModel
 
 # إعداد السجلات التفصيلية لمراقبة البوت عبر بيئات السحابية مثل Railway
 logging.basicConfig(
@@ -1027,7 +1028,7 @@ async def document_upload_quiz_handler(update: Update, context: ContextTypes.DEF
         await waiting_ui.edit_text(text="⚡ <code>Text layers compiled successfully. Forcing Gemini structural JSON schema compliance...</code>", parse_mode="HTML")
 
         # تشييد وبناء قالب الفروق مجدداً للتحليل الهيكلي الآمن
-        class DocumentQuizTemplate(types.BaseModel):
+        class DocumentQuizTemplate(BaseModel):
             question_text: str
             option_a: str
             option_b: str
