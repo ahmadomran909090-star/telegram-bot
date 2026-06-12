@@ -1054,13 +1054,19 @@ async def document_upload_quiz_handler(update: Update, context: ContextTypes.DEF
         
         rendered_quiz_output = "🧠 <b>PDF Mapped Structural Exam Framework Generated:</b>\n\n"
         for index, question in enumerate(parsed_pdf_questions):
+            q = str(question['question_text']).replace("<", "&lt;").replace(">", "&gt;")
+            a = str(question['option_a']).replace("<", "&lt;").replace(">", "&gt;")
+            b = str(question['option_b']).replace("<", "&lt;").replace(">", "&gt;")
+            c = str(question['option_c']).replace("<", "&lt;").replace(">", "&gt;")
+            d = str(question['option_d']).replace("<", "&lt;").replace(">", "&gt;")
+            correct = str(question['correct_option_token']).upper()
             rendered_quiz_output += (
-                f"<b>Q{index+1}: {question['question_text']}</b>\n"
-                f"🔸 A) {question['option_a']}\n"
-                f"🔸 B) {question['option_b']}\n"
-                f"🔸 C) {question['option_c']}\n"
-                f"🔸 D) {question['option_d']}\n"
-                f"👉 <b>Validated Key: Option [{question['correct_option_token'].upper()}]</b>\n\n"
+                f"<b>Q{index+1}: {q}</b>\n"
+                f"🔸 A) {a}\n"
+                f"🔸 B) {b}\n"
+                f"🔸 C) {c}\n"
+                f"🔸 D) {d}\n"
+                f"👉 <b>Validated Key: Option [{correct}]</b>\n\n"
             )
 
         await waiting_ui.reply_text(text=rendered_quiz_output, reply_markup=main_menu_keyboard(lang), parse_mode="HTML")
@@ -1068,7 +1074,8 @@ async def document_upload_quiz_handler(update: Update, context: ContextTypes.DEF
         logger.error(f"Deep document pipeline automation failure scenario: {pdf_pipeline_fault}", exc_info=True)
         if os.path.exists(local_temporary_pdf_path):
             os.remove(local_temporary_pdf_path)
-        await waiting_ui.reply_text(text=f"❌ <b>Critical PDF Processing Fail:</b>\n<code>{str(pdf_pipeline_fault)[:300]}</code>", reply_markup=main_menu_keyboard(lang), parse_mode="HTML")
+        error_text = str(pdf_pipeline_fault)[:300].replace("<", "&lt;").replace(">", "&gt;")
+        await waiting_ui.reply_text(text=f"❌ <b>Critical PDF Processing Fail:</b>\n<code>{error_text}</code>", reply_markup=main_menu_keyboard(lang), parse_mode="HTML")
 
 # ==========================================================================================
 # ⚙️ القسم 9: النواة التشغيلية الأساسية وبدء محرك الـ Polling لـ Telegram Framework
