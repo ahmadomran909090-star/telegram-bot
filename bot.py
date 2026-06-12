@@ -1064,10 +1064,10 @@ async def document_upload_quiz_handler(update: Update, context: ContextTypes.DEF
 
         await waiting_ui.reply_text(text=rendered_quiz_output, reply_markup=main_menu_keyboard(lang), parse_mode="HTML")
     except Exception as pdf_pipeline_fault:
-        logger.error(f"Deep document pipeline automation failure scenario: {pdf_pipeline_fault}")
+        logger.error(f"Deep document pipeline automation failure scenario: {pdf_pipeline_fault}", exc_info=True)
         if os.path.exists(local_temporary_pdf_path):
             os.remove(local_temporary_pdf_path)
-        await waiting_ui.reply_text(text="❌ <b>Critical PDF Processing Fail:</b> Internal pipeline crashed during parsing. Re-ensure document encoding metrics.", reply_markup=main_menu_keyboard(lang), parse_mode="HTML")
+        await waiting_ui.reply_text(text=f"❌ <b>Critical PDF Processing Fail:</b>\n<code>{str(pdf_pipeline_fault)[:300]}</code>", reply_markup=main_menu_keyboard(lang), parse_mode="HTML")
 
 # ==========================================================================================
 # ⚙️ القسم 9: النواة التشغيلية الأساسية وبدء محرك الـ Polling لـ Telegram Framework
