@@ -132,7 +132,7 @@ LANG_DICT: Dict[str, Dict[str, str]] = {
         "btn_links": "🔖 Dynamic Link Saver & Brain Dump",
         "btn_russian": "🇷🇺 Language Hub: Learn Russian",
         "btn_turkish": "🇹🇷 Language Hub: Learn Turkish",
-        "btn_lang": "⚙️ Change Global Language Settings",
+        "btn_translate": "🌍 Professional Text & PDF Translator",
         "chat_ai_status": "🤖 <b>Conversational LLM Mode Active:</b>\nYou can chat with me directly in natural text at any time for assistant support, code reviews, or educational inquiries.",
         "pomo_started": "🚀 <b>Asynchronous Pomodoro Engine Activated!</b>\nFocus session set for 25 minutes. Do not break concentration. Visual and acoustic barriers should be maintained. I will notify you upon expiration. 💪",
         "pomo_done": "🔔 <b>Focus Cycle Completed!</b>\nYour 25-minute Pomodoro focus matrix has concluded successfully. Step away from your workbench, breathe, and take a 5-minute cognitive break! ☕",
@@ -167,7 +167,7 @@ LANG_DICT: Dict[str, Dict[str, str]] = {
         "btn_links": "🔖 مستودع الروابط المؤرشفة ومفكرة الأفكار",
         "btn_russian": "🇷🇺 بوابة تعلم اللغة الروسية من الصفر",
         "btn_turkish": "🇹🇷 بوابة تعلم اللغة التركية من الصفر",
-        "btn_lang": "⚙️ تغيير لغة النظام / Change Global Language",
+        "btn_translate": "🌍 مترجم الملفات والنصوص الاحترافي",
         "chat_ai_status": "🤖 <b>وضع المساعد الشخصي والمحاكاة المباشرة نشط:</b>\nيمكنك إرسال أي نص أو كود أو سؤال عام للبوت مباشرة في أي وقت دون قيود ليقوم بمساعدتك فوراً.",
         "pomo_started": "🚀 <b>تم تفعيل محرك البومودورو والتركيز بنجاح!</b>\nبدأت الجلسة الحين لمدة 25 دقيقة. يرجى عزل نفسك تماماً عن المشتتات والبيئات المحيطة وسأقوم بإرسال إشعار لك فور انتهاء الوقت. 💪",
         "pomo_done": "🔔 <b>انتهت دورة التركيز بنجاح واكتمال!</b>\nانتهت جلسة البومودورو (25 دقيقة) الحين. اترك شاشة العمل ومفاتيح التطوير، خذ نفساً عميقاً واستمتع باستراحة كوجنيتيف قصيرة لمدة 5 دقائق! ☕",
@@ -202,7 +202,7 @@ LANG_DICT: Dict[str, Dict[str, str]] = {
         "btn_links": "🔖 Сохранение ссылок и банк идей",
         "btn_russian": "🇷🇺 Изучение русского языка",
         "btn_turkish": "🇹🇷 Изучение турецкого языка",
-        "btn_lang": "⚙️ Изменить глобальные языковые настройки",
+        "btn_translate": "🌍 Профессиональный переводчик текста и PDF",
         "chat_ai_status": "🤖 <b>Режим AI-ассистента активен:</b>\nВы можете общаться со мной напрямую в любое время для получения помощи, обзора кода или ответов на вопросы.",
         "pomo_started": "🚀 <b>Таймер Помодоро активирован!</b>\nФокусируйтесь на задаче в течение 25 минут. Я пришлю вам уведомление по окончании сессии. 💪",
         "pomo_done": "🔔 <b>Сессия фокуса завершена!</b>\nВаш 25-минутный цикл Помодоро успешно завершен. Сделайте перерыв на 5 минут! ☕",
@@ -335,6 +335,7 @@ def set_user_lang(user_id: int, username: Optional[str], lang: str) -> None:
 def main_menu_keyboard(lang: str) -> InlineKeyboardMarkup:
     """تقوم بتشييد وهندسة لوحة التحكم والمفاتيح الأساسية للبوت تليجرام بناء على لغة العرض."""
     keyboard = [
+        [InlineKeyboardButton(LANG_DICT[lang]["btn_translate"], callback_data="submenu_translate")],
         [InlineKeyboardButton(LANG_DICT[lang]["btn_tasks"], callback_data="submenu_tasks")],
         [InlineKeyboardButton(LANG_DICT[lang]["btn_quiz"], callback_data="submenu_quiz")],
         [InlineKeyboardButton(LANG_DICT[lang]["btn_tools"], callback_data="submenu_tools")],
@@ -489,15 +490,15 @@ async def main_callback_query_router(update: Update, context: ContextTypes.DEFAU
 
     # 6. قسم إدارة وجدولة المهام والتنبيهات الفرعي
     elif data_payload == "submenu_tasks":
-        btn_add = "➕ Add Task" if lang=='en' else "➕ إضافة مهمة جديدة" if lang=='ar' else "➕ Добавить задачу"
-        btn_view = "📋 View Active Tasks" if lang=='en' else "📋 استعراض وعرض المهام الحالية" if lang=='ar' else "📋 Посмотреть задачи"
+        btn_add = "➕ إضافة مهمة جديدة" if lang=='ar' else "➕ Add Task" if lang=='en' else "➕ Добавить задачу"
+        btn_view = "📋 استعراض المهام الحالية" if lang=='ar' else "📋 View Active Tasks" if lang=='en' else "📋 Посмотреть задачи"
         keyboard = [
             [InlineKeyboardButton(btn_add, callback_data="task_action_prompt_add")],
             [InlineKeyboardButton(btn_view, callback_data="task_action_view_all")],
             [InlineKeyboardButton(LANG_DICT[lang]["back"], callback_data="go_main")]
         ]
         await query.edit_message_text(
-            text="📁 <b>Task Control Terminal:</b>\n\nManage your persistent database schedule entries easily:",
+            text="📁 <b>محطة إدارة المهام:</b>\n\nأضف وتابع مهامك المحفوظة بسهولة:",
             reply_markup=InlineKeyboardMarkup(keyboard),
             parse_mode="HTML"
         )
@@ -527,7 +528,7 @@ async def main_callback_query_router(update: Update, context: ContextTypes.DEFAU
                     task_id, task_msg = item
                     layout_text += f"<b>{idx+1}.</b> {task_msg}\n"
                     # زر إنهاء فريد لكل مهمة بناء على معرفها التلقائي بالـ Database
-                    keyboard.append([InlineKeyboardButton(f"✅ Mark Done {idx+1}", callback_data=f"taskdone_id_{task_id}")])
+                    keyboard.append([InlineKeyboardButton(f"✅ إنهاء المهمة {idx+1}" if lang=='ar' else f"✅ Mark Done {idx+1}", callback_data=f"taskdone_id_{task_id}")])
                 
                 keyboard.append([InlineKeyboardButton(LANG_DICT[lang]["back"], callback_data="submenu_tasks")])
                 await query.edit_message_text(
@@ -575,28 +576,28 @@ async def main_callback_query_router(update: Update, context: ContextTypes.DEFAU
     elif data_payload == "growth_action_project":
         context.user_data['action'] = 'state_waiting_for_project_parameters'
         prompt_info = (
-            "💡 <b>AI Side-Project Architect:</b>\n\nSend me your current technology keywords (e.g., Python, Docker, React, SQL) along with your expertise level (Beginner/Intermediate/Advanced) and I will craft an optimized software architecture plan for your GitHub profile portfolio."
-            if lang == 'en' else
-            "💡 <b>مولد أفكار ومخططات المشاريع الجانبية:</b>\n\nأرسل لي الكلمات المفتاحية للتقنيات التي تتقنها أو تدرسها (مثال: Python, React, JavaScript, Django) مع مستوى خبرتك الحالية الحين، وسيقوم الذكاء الاصطناعي بابتكار بنية مشروع كاملة، فريدة ومجهزة لرفعها في معرض أعمالك."
+            "💡 <b>مولد أفكار ومخططات المشاريع الجانبية:</b>\n\nأرسل لي الكلمات المفتاحية للتقنيات التي تتقنها (مثال: Python, React, Django) مع مستوى خبرتك، وسيقوم الذكاء الاصطناعي بابتكار بنية مشروع كاملة جاهزة لمعرض أعمالك."
+            if lang == 'ar' else
+            "💡 <b>AI Side-Project Architect:</b>\n\nSend your technology keywords (e.g., Python, Docker, React) and expertise level, and I will craft an optimized software architecture plan for your portfolio."
         )
         await query.edit_message_text(text=prompt_info, parse_mode="HTML")
 
     elif data_payload == "growth_action_challenge":
         await query.edit_message_text(
-            text="⚡ <code>Calibrating high-energy discipline nodes... Generating challenge...</code>" if lang=='en' else "⚡ <code>جاري فحص مصفوفة الانضباط وتوليد التحدي اليومي المكثف الحين...</code>",
+            text="⚡ <code>جاري توليد التحدي اليومي المكثف الحين...</code>" if lang=='ar' else "⚡ <code>Generating challenge...</code>",
             parse_mode="HTML"
         )
         challenge_prompt = (
-            "Act as a professional elite productivity, military discipline, and career execution coach. Generate EXACTLY ONE random, unique, highly structural, and actionable 24-hour accountability challenge for a technology student or high-performance software programmer. The challenge must be strictly practical, time-bound, and immediately measurable today. Do not give generic advice. Keep it hard, intense, concise, and heavily motivating. Respond entirely in " + lang + " language."
+            "Act as a professional elite productivity and career execution coach. Generate EXACTLY ONE random, unique, highly structural, and actionable 24-hour accountability challenge for a technology student or software programmer. Keep it hard, intense, concise, and heavily motivating. Respond entirely in " + ("Arabic" if lang=='ar' else "English" if lang=='en' else "Russian") + " language."
         )
         try:
             ai_response = ai_client.models.generate_content(model='gemini-2.5-flash', contents=challenge_prompt)
             keyboard = [
-                [InlineKeyboardButton("🔄 Generate Another Challenge" if lang=='en' else "🔄 رول وتوليد تحدي آخر الحين", callback_data="growth_action_challenge")],
+                [InlineKeyboardButton("🔄 توليد تحدي آخر" if lang=='ar' else "🔄 Generate Another", callback_data="growth_action_challenge")],
                 [InlineKeyboardButton(LANG_DICT[lang]["back"], callback_data="submenu_growth")]
             ]
             await query.message.reply_text(
-                text=f"🎯 <b>Your 24-Hour Gamified Discipline Challenge Matrix:</b>\n\n{ai_response.text}",
+                text=f"🎯 <b>تحدي الـ 24 ساعة:</b>\n\n{ai_response.text}" if lang=='ar' else f"🎯 <b>Your 24-Hour Challenge:</b>\n\n{ai_response.text}",
                 reply_markup=InlineKeyboardMarkup(keyboard),
                 parse_mode="HTML"
             )
@@ -607,26 +608,46 @@ async def main_callback_query_router(update: Update, context: ContextTypes.DEFAU
     elif data_payload == "growth_action_cv":
         context.user_data['action'] = 'state_waiting_for_cv_input'
         prompt_info = (
-            "📝 <b>Executive CV & Bio Optimization Engine:</b>\n\nSend me any raw draft statement, messy job description bullet points, or your current personal profile text. I will structurally engineer and re-write it with hyper-impactful verbs and action-driven technical terminology tailored to clear ATS tracking filters and impress HR scouts."
-            if lang == 'en' else
-            "📝 <b>مصحح ومطور العبارات والسير الذاتية والـ Bio الاحترافي:</b>\n\nأرسل لي العبارة العادية أو مسودة الخبرة أو الوصف الذي ترغب بوضعه في سيرتك الذاتية أو حساب LinkedIn الحين، وسيقوم النظام بإعادة صياغتها بالكامل بأسلوب إداري مبهر ومقنع للشركات الكبرى وأصحاب العمل."
+            "📝 <b>مصحح ومطور السيرة الذاتية والـ Bio الاحترافي:</b>\n\nأرسل لي مسودة سيرتك الذاتية أو وصف خبرتك، وسيقوم النظام بإعادة صياغتها بأسلوب احترافي مقنع."
+            if lang == 'ar' else
+            "📝 <b>Executive CV & Bio Optimization Engine:</b>\n\nSend me your raw draft statement or job description and I will re-write it with high-impact professional terminology."
         )
         await query.edit_message_text(text=prompt_info, parse_mode="HTML")
 
     # 8. محطة الكويزات الذكية وبناء أسئلة الـ JSON والـ PDF
     elif data_payload == "submenu_quiz":
+        keyboard = [
+            [InlineKeyboardButton("5️⃣  أسئلة", callback_data="quiz_count_5"),
+             InlineKeyboardButton("🔟  أسئلة", callback_data="quiz_count_10")],
+            [InlineKeyboardButton("2️⃣0️⃣  سؤال", callback_data="quiz_count_20"),
+             InlineKeyboardButton("5️⃣0️⃣  سؤال", callback_data="quiz_count_50")],
+            [InlineKeyboardButton("💯  سؤال", callback_data="quiz_count_100")],
+            [InlineKeyboardButton(LANG_DICT[lang]["back"], callback_data="go_main")]
+        ]
+        await query.edit_message_text(
+            text="🧠 <b>مركز الكويزات الذكي:</b>\n\nكم سؤال تريد توليده من الـ PDF؟",
+            reply_markup=InlineKeyboardMarkup(keyboard),
+            parse_mode="HTML"
+        )
+
+    elif data_payload.startswith("quiz_count_"):
+        count = int(data_payload.split("_")[2])
         context.user_data['action'] = 'state_waiting_for_quiz_payload'
-        await query.edit_message_text(text=LANG_DICT[lang]["quiz_prompt"], parse_mode="HTML")
+        context.user_data['quiz_count'] = count
+        await query.edit_message_text(
+            text=f"✅ اخترت <b>{count} سؤال</b>\n\nالآن أرسل ملف PDF أو نص وسيقوم الذكاء الاصطناعي بتوليد الأسئلة فوراً.",
+            parse_mode="HTML"
+        )
 
     # 9. قسم أدوات المطور والدراسة بالذكاء الاصطناعي
     elif data_payload == "submenu_tools":
         keyboard = [
-            [InlineKeyboardButton("🛠️ AI Advanced Code Debugger & Optimizer", callback_data="tool_action_code")],
-            [InlineKeyboardButton("📚 AI Comprehensive Non-Fiction Book Summarizer", callback_data="tool_action_book")],
+            [InlineKeyboardButton("🛠️ مصحح ومحسّن الأكواد بالذكاء الاصطناعي", callback_data="tool_action_code")],
+            [InlineKeyboardButton("📚 ملخص الكتب العلمية والتطويرية", callback_data="tool_action_book")],
             [InlineKeyboardButton(LANG_DICT[lang]["back"], callback_data="go_main")]
         ]
         await query.edit_message_text(
-            text="🤖 <b>AI Developer & Advanced Study Framework:</b>\n\nSelect your automated intellectual accelerator tool:",
+            text="🤖 <b>أدوات المطور والدراسة بالذكاء الاصطناعي:</b>\n\nاختر الأداة التي تريد استخدامها:",
             reply_markup=InlineKeyboardMarkup(keyboard),
             parse_mode="HTML"
         )
@@ -634,7 +655,7 @@ async def main_callback_query_router(update: Update, context: ContextTypes.DEFAU
     elif data_payload == "tool_action_code":
         context.user_data['action'] = 'state_waiting_for_code_block'
         await query.edit_message_text(
-            text="💻 <b>Advanced Code Analyzer:</b>\n\nPaste your raw source code block (Python, C++, JS, etc.) below. The AI will instantly audit the logical syntax, detect subtle leak bugs, optimize time-complexity profiles, and supply optimized structural variations.",
+            text="💻 <b>محلل الأكواد المتقدم:</b>\n\nأرسل الكود البرمجي (Python، C++، JS، إلخ) وسيقوم الذكاء الاصطناعي بتدقيقه وإيجاد الأخطاء وتحسينه فوراً.",
             parse_mode="HTML"
         )
 
@@ -642,16 +663,16 @@ async def main_callback_query_router(update: Update, context: ContextTypes.DEFAU
         context.user_data['action'] = 'state_waiting_for_book_title'
         await query.edit_message_text(text=LANG_DICT[lang]["book_prompt"], parse_mode="HTML")
 
-    # 10. مؤقت بومودورو الآلي المتقدم وتكامل طابور المهام Async Job Queue
+    # 10. مؤقت بومودورو الآلي
     elif data_payload == "submenu_pomo":
         keyboard = [
-            [InlineKeyboardButton("⏱️ Activate 25-Min Production Session", callback_data="pomo_action_start")],
-            [InlineKeyboardButton("🎵 Focus Environment: Lo-Fi Study Stream", url="https://www.youtube.com/watch?v=jfKfPfyJRdk")],
-            [InlineKeyboardButton("🎵 Focus Environment: Rain & Thunderstorm ASMR", url="https://www.youtube.com/watch?v=mPZkdNFkNps")],
+            [InlineKeyboardButton("⏱️ تفعيل جلسة تركيز 25 دقيقة", callback_data="pomo_action_start")],
+            [InlineKeyboardButton("🎵 موسيقى تركيز: Lo-Fi", url="https://www.youtube.com/watch?v=jfKfPfyJRdk")],
+            [InlineKeyboardButton("🎵 موسيقى تركيز: أمطار وعواصف", url="https://www.youtube.com/watch?v=mPZkdNFkNps")],
             [InlineKeyboardButton(LANG_DICT[lang]["back"], callback_data="go_main")]
         ]
         await query.edit_message_text(
-            text="⏱️ <b>Asynchronous Pomodoro Engine & Cognitive Focus Hub:</b>\n\nCalibrate your physical study cycles and block external noise nodes:",
+            text="⏱️ <b>مؤقت البومودورو وأصوات التركيز:</b>\n\nابدأ جلسة تركيز مدتها 25 دقيقة وسيُرسل لك إشعار عند انتهائها:",
             reply_markup=InlineKeyboardMarkup(keyboard),
             parse_mode="HTML"
         )
@@ -666,16 +687,16 @@ async def main_callback_query_router(update: Update, context: ContextTypes.DEFAU
             pomodoro_expiration_callback(user_id, lang, context)
         )
 
-    # 11. قسم سينما ومسلسلات وأفلام التكنولوجيا والـ Streaming
+    # 11. قسم سينما التكنولوجيا
     elif data_payload == "submenu_movies":
         keyboard = [
-            [InlineKeyboardButton("🎬 Artificial Intelligence & Androids Category", callback_data="cinema_cat_ai")],
-            [InlineKeyboardButton("👨‍💻 Programming, Systems & Tech Startup History", callback_data="cinema_cat_coding")],
-            [InlineKeyboardButton("🔒 Cyber Security, Hacking & Surveillance Era", callback_data="cinema_cat_cyber")],
+            [InlineKeyboardButton("🎬 الذكاء الاصطناعي والروبوتات", callback_data="cinema_cat_ai")],
+            [InlineKeyboardButton("👨‍💻 البرمجة والشركات التقنية", callback_data="cinema_cat_coding")],
+            [InlineKeyboardButton("🔒 الأمن السيبراني والاختراق", callback_data="cinema_cat_cyber")],
             [InlineKeyboardButton(LANG_DICT[lang]["back"], callback_data="go_main")]
         ]
         await query.edit_message_text(
-            text="🎬 <b>Welcome to the Technical Cinema Database:</b>\n\nSelect a sub-genre to pull streaming blueprints and instantaneous look-up URLs for top titles:",
+            text="🎬 <b>سينما التكنولوجيا:</b>\n\naختر التصنيف للعثور على أفضل الأفلام والمسلسلات التقنية:",
             reply_markup=InlineKeyboardMarkup(keyboard),
             parse_mode="HTML"
         )
@@ -688,21 +709,48 @@ async def main_callback_query_router(update: Update, context: ContextTypes.DEFAU
             keyboard.append([InlineKeyboardButton(film["title"], url=film["search_url"])])
         keyboard.append([InlineKeyboardButton(LANG_DICT[lang]["back"], callback_data="submenu_movies")])
         await query.edit_message_text(
-            text="🍿 <b>Indexed Tech Masterpieces Found:</b>\n\nClick any button title to search availability, trailers, and streaming options instantly online:",
+            text="🍿 <b>الأفلام والمسلسلات المتاحة:</b>\n\nاضغط على أي عنوان للبحث عنه ومشاهدته:",
             reply_markup=InlineKeyboardMarkup(keyboard),
             parse_mode="HTML"
         )
 
-    # 12. مستودع حفظ وتصنيف الروابط السريع والمفكرة المفتوحة
+    # 12. مستودع حفظ الروابط والأفكار
     elif data_payload == "submenu_links":
         keyboard = [
-            [InlineKeyboardButton("💡 Deposit a Brain Dump Idea Row", callback_data="link_action_dump")],
-            [InlineKeyboardButton("🔖 Secure a Resource Hyperlink URL", callback_data="link_action_save")],
+            [InlineKeyboardButton("💡 تفريغ فكرة أو خاطرة", callback_data="link_action_dump")],
+            [InlineKeyboardButton("🔖 حفظ رابط مهم", callback_data="link_action_save")],
             [InlineKeyboardButton(LANG_DICT[lang]["back"], callback_data="go_main")]
         ]
         await query.edit_message_text(
-            text="🔖 <b>Persistent Bookmarks & Cognitive Waste Dump Terminals:</b>\n\nPrevent context switching by offloading mental metadata safely:",
+            text="🔖 <b>مستودع الروابط والأفكار:</b>\n\nاحفظ أفكارك وروابطك المهمة بسهولة:",
             reply_markup=InlineKeyboardMarkup(keyboard),
+            parse_mode="HTML"
+        )
+
+    # 13. قسم الترجمة الاحترافية
+    elif data_payload == "submenu_translate":
+        keyboard = [
+            [InlineKeyboardButton("🇦🇪 Translate to Arabic", callback_data="translate_to_ar"),
+             InlineKeyboardButton("🇷🇺 Translate to Russian", callback_data="translate_to_ru")],
+            [InlineKeyboardButton("🇬🇧 Translate to English", callback_data="translate_to_en"),
+             InlineKeyboardButton("🇩🇪 Translate to German", callback_data="translate_to_de")],
+            [InlineKeyboardButton("🇹🇷 Translate to Turkish", callback_data="translate_to_tr")],
+            [InlineKeyboardButton(LANG_DICT[lang]["back"], callback_data="go_main")]
+        ]
+        await query.edit_message_text(
+            text="🌍 <b>Professional Translator:</b>\n\nSelect the target language, then send your text or PDF file:",
+            reply_markup=InlineKeyboardMarkup(keyboard),
+            parse_mode="HTML"
+        )
+
+    elif data_payload.startswith("translate_to_"):
+        target_lang = data_payload.split("_")[2]
+        lang_names = {"ar": "Arabic 🇦🇪", "ru": "Russian 🇷🇺", "en": "English 🇬🇧", "de": "German 🇩🇪", "tr": "Turkish 🇹🇷"}
+        lang_full = {"ar": "Arabic", "ru": "Russian", "en": "English", "de": "German", "tr": "Turkish"}
+        context.user_data['action'] = 'state_waiting_for_translation_input'
+        context.user_data['translate_target'] = target_lang
+        await query.edit_message_text(
+            text=f"✅ Target language: <b>{lang_names[target_lang]}</b>\n\nNow send your text or PDF file and the AI will translate it instantly.",
             parse_mode="HTML"
         )
 
@@ -893,13 +941,39 @@ async def global_user_text_message_handler(update: Update, context: ContextTypes
             logger.error(f"Book summarizer subsegment fail: {api_err}")
             await waiting_ui.reply_text(text=LANG_DICT[lang]["generic_error"], reply_markup=main_menu_keyboard(lang))
 
+    # 💠 الحالة ط: الترجمة الاحترافية للنصوص
+    elif current_state == 'state_waiting_for_translation_input':
+        target_lang = context.user_data.get('translate_target', 'en')
+        lang_full = {"ar": "Arabic", "ru": "Russian", "en": "English", "de": "German", "tr": "Turkish"}
+        lang_names = {"ar": "Arabic 🇦🇪", "ru": "Russian 🇷🇺", "en": "English 🇬🇧", "de": "German 🇩🇪", "tr": "Turkish 🇹🇷"}
+        waiting_ui = await update.message.reply_text(
+            text=f"⚡ <code>Translating to {lang_names[target_lang]}...</code>",
+            parse_mode="HTML"
+        )
+        context.user_data.clear()
+        translation_prompt = (
+            f"You are a professional certified translator. Translate the following text accurately and naturally into {lang_full[target_lang]}. "
+            f"Maintain the original meaning, tone, and formatting. Do not add any commentary or explanation, only provide the translated text:\n\n{input_text}"
+        )
+        try:
+            generation = ai_client.models.generate_content(model='gemini-2.5-flash', contents=translation_prompt)
+            await waiting_ui.reply_text(
+                text=f"🌍 <b>Translation to {lang_names[target_lang]}:</b>\n\n{generation.text}",
+                reply_markup=main_menu_keyboard(lang),
+                parse_mode="HTML"
+            )
+        except Exception as api_err:
+            logger.error(f"Translation handler error: {api_err}")
+            await waiting_ui.reply_text(text=LANG_DICT[lang]["generic_error"], reply_markup=main_menu_keyboard(lang))
+
     # 💠 الحالة ح: توليد بنية الكويزات الذكية عبر الاستجابة المهيكلة (Gemini JSON Schema Framework)
     elif current_state == 'state_waiting_for_quiz_payload':
-        waiting_ui = await update.message.reply_text(text="⚡ <code>Parsing text metadata blocks... Structuring evaluation matrices into schema nodes...</code>", parse_mode="HTML")
+        quiz_count = context.user_data.get('quiz_count', 5)
+        waiting_ui = await update.message.reply_text(text="⚡ <code>جاري توليد الأسئلة من النص...</code>", parse_mode="HTML")
         context.user_data.clear()
         
         quiz_system_prompt = (
-            f"Construct exactly 3 academic multiple-choice checking questions based purely on this instructional text material: '{input_text}'."
+            f"Construct exactly {quiz_count} academic multiple-choice questions based purely on this instructional text material: '{input_text}'."
         )
         try:
             # تشييد الهيكل البرمجي المتوقع باستخدام BaseModel لفرضه على مخرجات الذكاء الاصطناعي
@@ -975,13 +1049,9 @@ async def document_upload_quiz_handler(update: Update, context: ContextTypes.DEF
     user_id = update.effective_user.id
     lang = get_user_lang(user_id)
 
-    # التحقق مما إذا كان المستخدم قد اختار تفعيل ميزة الكويزات أولاً أم رفع عشوائياً
-    if current_state != 'state_waiting_for_quiz_payload':
-        warning_upload = (
-            "🤖 Please navigate and select the <b>AI Quiz Generator Terminal</b> button first before sending technical document files to the pipeline."
-            if lang=='en' else
-            "🤖 يرجى الانتقال والضغط على زر <b>مركز الكويزات الذكي واختبارات الـ PDF</b> أولاً من القائمة قبل رفع أي مستندات برمجية لتهيئة المحرك."
-        )
+    # التحقق مما إذا كان المستخدم قد اختار تفعيل ميزة الكويزات أو الترجمة أولاً
+    if current_state not in ('state_waiting_for_quiz_payload', 'state_waiting_for_translation_input'):
+        warning_upload = "🤖 يرجى اختيار إحدى الميزات من القائمة أولاً (الكويزات أو الترجمة) قبل رفع ملف PDF."
         await target_message.reply_text(text=warning_upload, reply_markup=main_menu_keyboard(lang), parse_mode="HTML")
         return
 
@@ -1028,7 +1098,31 @@ async def document_upload_quiz_handler(update: Update, context: ContextTypes.DEF
         # تنظيف النص من رموز HTML
         extracted_text_pool = extracted_text_pool.replace("<", "&lt;").replace(">", "&gt;")
 
-        await waiting_ui.edit_text(text="⚡ <code>Text layers compiled successfully. Forcing Gemini structural JSON schema compliance...</code>", parse_mode="HTML")
+        # --- مسار الترجمة ---
+        if current_state == 'state_waiting_for_translation_input':
+            target_lang = context.user_data.get('translate_target', 'en')
+            lang_full = {"ar": "Arabic", "ru": "Russian", "en": "English", "de": "German", "tr": "Turkish"}
+            lang_names = {"ar": "Arabic 🇦🇪", "ru": "Russian 🇷🇺", "en": "English 🇬🇧", "de": "German 🇩🇪", "tr": "Turkish 🇹🇷"}
+            context.user_data.clear()
+            await waiting_ui.edit_text(text=f"⚡ <code>Translating PDF to {lang_names[target_lang]}...</code>", parse_mode="HTML")
+            translation_prompt = (
+                f"You are a professional certified translator. Translate the following text accurately and naturally into {lang_full[target_lang]}. "
+                f"Maintain the original meaning, tone, and formatting. Only provide the translated text:\n\n{extracted_text_pool[:6000]}"
+            )
+            try:
+                generation = ai_client.models.generate_content(model='gemini-2.5-flash', contents=translation_prompt)
+                await waiting_ui.reply_text(
+                    text=f"🌍 <b>Translation to {lang_names[target_lang]}:</b>\n\n{generation.text}",
+                    reply_markup=main_menu_keyboard(lang),
+                    parse_mode="HTML"
+                )
+            except Exception as api_err:
+                logger.error(f"PDF translation error: {api_err}")
+                await waiting_ui.reply_text(text=LANG_DICT[lang]["generic_error"], reply_markup=main_menu_keyboard(lang))
+            return
+
+        # --- مسار الكويز ---
+        await waiting_ui.edit_text(text="⚡ <code>جاري توليد الأسئلة من الـ PDF...</code>", parse_mode="HTML")
 
         # تشييد وبناء قالب الفروق مجدداً للتحليل الهيكلي الآمن
         class DocumentQuizTemplate(BaseModel):
@@ -1040,7 +1134,7 @@ async def document_upload_quiz_handler(update: Update, context: ContextTypes.DEF
             correct_option_token: str
 
         pdf_ai_prompt = (
-            f"Generate an advanced, comprehensive 3-question evaluation multiple-choice test based directly on this harvested document text layout database block:\n\n{extracted_text_pool[:6000]}" # قطع النص عند 6000 حرف لتفادي تجاوز حدود حجم الـ Token الخاص بالنماذج السريعة
+            f"Generate exactly {context.user_data.get('quiz_count', 5)} advanced multiple-choice questions based on this text:\n\n{extracted_text_pool[:6000]}"
         )
 
         ai_structured_response = ai_client.models.generate_content(
